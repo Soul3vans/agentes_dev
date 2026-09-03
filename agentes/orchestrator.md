@@ -1,4 +1,4 @@
-# agents/orchestator.md
+# agents/orchestrator.md
 
 ## 1. Identidad
 
