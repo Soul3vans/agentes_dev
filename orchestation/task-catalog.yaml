@@ -1,0 +1,166 @@
+# orchestation/task-catalog.yaml
+# Catálogo de tipos de tarea y reglas de enrutamiento del orchestrator.
+# Este archivo es la ÚNICA fuente de verdad para decidir a qué agente
+# delegar cada solicitud. El orchestrator no debe tener reglas hardcodeadas.
+#
+# Resolución: si existe context/task-catalog.override.yaml en el proyecto,
+# sus entradas sobrescriben (por campo "type") a las de este archivo base.
+# Para A/B testing de rutas: crear variantes (ej. task-catalog.variant-b.yaml)
+# y activar cuál se usa mediante flag en context/constraints.md.
+
+version: "1.1.0"
+last_updated: "2026-09-02"
+
+task_types:
+
+  - type: feature
+    description: >
+      Nueva funcionalidad solicitada por el PM. Punto de entrada obligatorio
+      para todo requerimiento funcional nuevo.
+      En Escenario A (Greenfield) se sigue el flujo completo hasta módulo
+      finalizado → QA → Cybersecurity.
+      En Escenario B (Brownfield) primero se revisa el estado existente
+      (project_review) antes de planificar la feature.
+    handler: tech-lead
+    entry_requirement: none   # tech-lead es quien CREA el spec, no lo requiere previo
+    escalation:
+      condition: >
+        La feature implica decisión arquitectónica: nueva base de datos,
+        nuevo patrón de diseño, integración externa relevante, o cambio de
+        arquitectura existente.
+      to: architect
+      then_returns_to: tech-lead   # tras el ADR, tech-lead retoma la descomposición
+    requires_context:
+      - context/project.md
+      - context/constraints.md
+      - specs/00-status.md
+    produces:
+      - specs/*.md
+    risk_level: medium
+
+  - type: project_review
+    description: >
+      Revisión inicial del estado de un proyecto existente (Brownfield).
+      Primero QA, luego Cybersecurity. Los hallazgos se presentan a tech-lead
+      para negociación con el PM antes de planificar nuevas features.
+    handler: tech-lead
+    entry_requirement: none
+    escalation: null
+    requires_context:
+      - context/constraints.md
+      - specs/00-status.md
+    produces:
+      - reporte de hallazgos
+      - actualización de specs/00-status.md
+    risk_level: high
+
+  - type: architecture_change
+    description: >
+      Solicitud explícita de diseño/rediseño arquitectónico, sin pasar por
+      descomposición de feature primero (ej. "necesito definir cómo escalar
+      el módulo de pagos").
+    handler: architect
+    entry_requirement: none
+    escalation: null
+    requires_context:
+      - context/architecture.md
+      - context/tech-stack.md
+      - specs/00-status.md
+    produces:
+      - docs/adr/*.md
+    risk_level: high
+
+  - type: bug
+    description: >
+      Reporte de error. El handler se determina dinámicamente según
+      severidad y claridad del diagnóstico, no siempre pasa por qa-reviewer.
+    handler: dynamic
+    routing_rule:
+      - condition: >
+          Bug trivial, con stack trace claro, causa evidente en una sola
+          capa/módulo identificable.
+        handler: dev_by_layer   # frontend-dev o backend-dev según capa afectada
+      - condition: >
+          Bug complejo, no reproducible de forma directa, causa incierta o
+          que abarca múltiples módulos/capas.
+        handler: qa-reviewer
+        then_returns_to: dev_by_layer
+    entry_requirement: none
+    escalation:
+      condition: >
+        El diagnóstico revela que el bug requiere cambio arquitectónico
+        (no un simple fix).
+      to: architect
+      then_returns_to: tech-lead
+    requires_context:
+      - specs/*.md   # si existe spec relacionado a la funcionalidad afectada
+      - specs/00-status.md
+    produces:
+      - fix (diff)
+      - test de regresión
+    risk_level: variable   # depende de la severidad detectada por orchestrator
+
+  - type: code_review
+    description: >
+      Revisión de una propuesta de cambio (diff) ya generada por un dev,
+      antes de considerarse completa.
+    handler: qa-reviewer
+    entry_requirement:
+      - spec relacionado (si aplica)
+      - diff propuesto por dev
+    escalation:
+      condition: "3 rechazos consecutivos sobre la misma propuesta"
+      to: tech-lead
+    requires_context:
+      - context/constraints.md
+      - context/architecture.md
+      - specs/00-status.md
+    produces:
+      - reporte de aprobación/rechazo
+    risk_level: medium
+
+  - type: security_audit
+    description: >
+      Cubre auditoría de vulnerabilidades, revisión de dependencias,
+      análisis de secretos expuestos, threat modeling, y validación de
+      PRs/cambios sensibles (auth, pagos, datos personales).
+    handler: cybersecurity
+    entry_requirement: none
+    escalation: null
+    requires_context:
+      - context/constraints.md
+      - agents/cybersecurity.md
+      - specs/00-status.md
+    produces:
+      - reporte de hallazgos
+      - severidad clasificada (crítica/alta/media/baja)
+    risk_level: high
+
+  - type: project_question
+    description: >
+      Pregunta sobre el estado, contexto, historial o configuración del
+      proyecto. No requiere delegar a ningún rol técnico.
+    handler: orchestrator
+    entry_requirement: none
+    escalation: null
+    requires_context:
+      - context/project.md
+      - specs/00-status.md
+    produces:
+      - respuesta directa
+    risk_level: low
+
+  - type: ambiguous
+    description: >
+      Solicitud que no encaja claramente en ningún tipo anterior, o que
+      carece de información suficiente para clasificar con confianza.
+    handler: orchestrator
+    entry_requirement: none
+    escalation:
+      condition: siempre
+      to: PM
+      action: "Solicitar aclaración antes de delegar a cualquier agente."
+    requires_context: []
+    produces:
+      - pregunta de aclaración al PM
+    risk_level: low
