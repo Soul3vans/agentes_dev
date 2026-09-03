@@ -1,7 +1,7 @@
 ---
 version: 1.1.0
 last_updated: 2026-09-02
-updated_by: PM + Arhitect (auditoria IRON)
+updated_by: PM + Architect (auditoria IRON)
 changelog:
   - 1.1.0: Añadido protocolo anti-alucinación (sección 10) y nota de memoria de agente (00-status.md)
   - 1.0.0: Versión inicial del framework, consolidada tras rondas de definición
@@ -139,7 +139,7 @@ Reglas no negociables, sin excepción salvo aprobación explícita del PM:
   **Archivo de memoria del agente**: `specs/00-status.md` es el resumen vivo
   del proyecto. Debe permanecer corto y nunca exceder la ventana de contexto. 
   Los detalles de deuda y bugs viven en `docs/debt.md` y `docsbugs.md` 
-  (fuentes de verdad). Orchestator debe consultarlo en cada nueva solicitud;
+  (fuentes de verdad). Orchestrator debe consultarlo en cada nueva solicitud;
   Tech-Lead es el único autorizado a actualizarlo.
   
 ## 10. Protocolo anti-alucinación y verificación de existencia (obligatorio)
