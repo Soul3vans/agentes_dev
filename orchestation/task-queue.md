@@ -1,5 +1,11 @@
 # Diseño de cola de tareas y workers idempotentes
 
+> **Estado: DISEÑO FUTURO**  
+> Este documento describe una visión de escalado.  
+> **No forma parte del runtime actual** de IRON (1 modelo, ejecución secuencial).  
+> El Orchestrator y los agentes **no deben cargarlo ni asumir** que las capacidades aquí descritas están disponibles.  
+> Activación: solo cuando se migre formalmente a multi-worker / CI automatizada / API de nion-cli.
+
 Objetivo: introducir una cola de tareas robusta (RabbitMQ / Redis Streams) con garantías de entrega, deduplicación y visibility timeout.
 
 1. Elección de tecnología

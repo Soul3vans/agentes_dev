@@ -1,5 +1,11 @@
 # nion-cli: API y webhooks (diseño)
 
+> **Estado: DISEÑO FUTURO**  
+> Este documento describe una visión de escalado.  
+> **No forma parte del runtime actual** de IRON (1 modelo, ejecución secuencial).  
+> El Orchestrator y los agentes **no deben cargarlo ni asumir** que las capacidades aquí descritas están disponibles.  
+> Activación: solo cuando se migre formalmente a multi-worker / CI automatizada / API de nion-cli.
+
 Objetivo: convertir `nion-cli` en un agente de ejecución automatizable con API y webhooks para integrarlo en CI/CD y orquestación.
 
 1. Principales endpoints (REST)

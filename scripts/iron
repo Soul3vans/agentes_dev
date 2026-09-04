@@ -1,0 +1,83 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# IRON wrapper — uso: iron <rol> "tu solicitud"
+# Roles: orch | tl | arch | be | fe | qa | cyber | intake
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROLES_DIR="$SCRIPT_DIR/roles"
+
+# Modelo por defecto (ajusta si usas otro)
+PROVIDER="${IRON_PROVIDER:-ollama}"
+MODEL="${IRON_MODEL:-qwen2.5-coder}"
+
+usage() {
+  echo "Uso: iron <rol> \"solicitud\""
+  echo ""
+  echo "Roles:"
+  echo "  orch    → Orchestrator"
+  echo "  tl      → Tech-Lead"
+  echo "  arch    → Architect"
+  echo "  be      → Backend-Dev"
+  echo "  fe      → Frontend-Dev"
+  echo "  qa      → QA-Reviewer"
+  echo "  cyber   → Cybersecurity"
+  echo "  intake  → Intake (texto libre → spec)"
+  echo ""
+  echo "Ejemplos:"
+  echo "  iron orch \"Quiero agregar login con email\""
+  echo "  iron tl \"Convierte esto en spec: ...\""
+  echo "  iron intake \"Como usuario quiero recuperar mi contraseña\""
+  echo ""
+  echo "Variables opcionales:"
+  echo "  IRON_PROVIDER  (default: ollama)"
+  echo "  IRON_MODEL     (default: qwen2.5-coder)"
+  exit 1
+}
+
+if [ $# -lt 2 ]; then
+  usage
+fi
+
+ROLE_KEY="$1"
+shift
+REQUEST="$*"
+
+case "$ROLE_KEY" in
+  orch)   ROLE_FILE="iron-orchestrator.md" ;;
+  tl)     ROLE_FILE="iron-tech-lead.md" ;;
+  arch)   ROLE_FILE="iron-architect.md" ;;
+  be)     ROLE_FILE="iron-backend.md" ;;
+  fe)     ROLE_FILE="iron-frontend.md" ;;
+  qa)     ROLE_FILE="iron-qa.md" ;;
+  cyber)  ROLE_FILE="iron-cyber.md" ;;
+  intake) ROLE_FILE="iron-intake.md" ;;
+  *)
+    echo "Rol desconocido: $ROLE_KEY"
+    usage
+    ;;
+esac
+
+ROLE_PATH="$ROLES_DIR/$ROLE_FILE"
+
+if [ ! -f "$ROLE_PATH" ]; then
+  echo "No encuentro el archivo de rol: $ROLE_PATH"
+  exit 1
+fi
+
+# Prompt final = rol + solicitud del PM
+PROMPT="$(cat "$ROLE_PATH")
+
+---
+Solicitud del PM:
+$REQUEST
+"
+
+# Ejecutar con nion
+if command -v nion >/dev/null 2>&1; then
+  nion ask -p "$PROVIDER" -m "$MODEL" "$PROMPT"
+else
+  echo "nion no está en el PATH. Prompt generado:"
+  echo "----------------------------------------"
+  echo "$PROMPT"
+fi

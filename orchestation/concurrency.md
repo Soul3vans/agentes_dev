@@ -1,5 +1,11 @@
 # Concurrencia configurable y pool de workers
 
+> **Estado: DISEÑO FUTURO**  
+> Este documento describe una visión de escalado.  
+> **No forma parte del runtime actual** de IRON (1 modelo, ejecución secuencial).  
+> El Orchestrator y los agentes **no deben cargarlo ni asumir** que las capacidades aquí descritas están disponibles.  
+> Activación: solo cuando se migre formalmente a multi-worker / CI automatizada / API de nion-cli.
+
 Objetivo: permitir pasar de un modelo secuencial (1) a un pool de workers concurrentes, manteniendo seguridad, locking por recurso y garantías de idempotencia.
 
 1. Principios

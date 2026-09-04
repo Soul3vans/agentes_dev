@@ -9,6 +9,8 @@ changelog:
 
 # context/constraints.md
 
+- Principios obligatorios del sistema: ver `context/principios.md` (fuente de verdad).
+
 ## 1. Snapshot de reglas de negocio del proyecto actual
 
 > Esta sección se completa por `architect`/`tech-lead` al analizar cada

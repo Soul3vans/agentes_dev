@@ -1,5 +1,11 @@
 # RBAC y Observabilidad (diseño)
 
+> **Estado: DISEÑO FUTURO**  
+> Este documento describe una visión de escalado.  
+> **No forma parte del runtime actual** de IRON (1 modelo, ejecución secuencial).  
+> El Orchestrator y los agentes **no deben cargarlo ni asumir** que las capacidades aquí descritas están disponibles.  
+> Activación: solo cuando se migre formalmente a multi-worker / CI automatizada / API de nion-cli.
+
 Objetivo: formalizar roles y permisos y definir métricas/observabilidad necesarias para escalar.
 
 1. Roles y permisos (ejemplo)
