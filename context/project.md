@@ -22,7 +22,7 @@ reportan; el PM asigna, aprueba y autoriza.
   agentes).
 - **Modo de operación**: LOCAL (sin tool-calling automático). Todo cambio de
   código se entrega en formato de diff (Formato de Propuesta de Cambio, definido
-  en `orchestation/handoff-protocol.md`). El PM aplica los cambios manualmente.
+  en `orchestration/handoff-protocol.md`). El PM aplica los cambios manualmente.
 - **Disciplina reforzada obligatoria** (compensa la menor capacidad del modelo):
   1. Cada invocación de rol carga únicamente su propio archivo `agentes/<rol>.md`
      más los archivos de `context/`/`specs/` estrictamente necesarios para la

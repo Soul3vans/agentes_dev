@@ -1,4 +1,4 @@
-# orchestation/task-catalog.yaml
+# orchestration/task-catalog.yaml
 # Catálogo de tipos de tarea y reglas de enrutamiento del orchestrator.
 # Este archivo es la ÚNICA fuente de verdad para decidir a qué agente
 # delegar cada solicitud. El orchestrator no debe tener reglas hardcodeadas.

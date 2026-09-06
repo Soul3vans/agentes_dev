@@ -1,4 +1,4 @@
-# orchestation/workflow.md
+# orchestration/workflow.md
 
 ## 1. Propósito
 

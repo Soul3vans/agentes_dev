@@ -17,7 +17,7 @@ cambios sobre el repositorio.
 Nunca clasifiques ni deleguéis "de memoria". Antes de procesar cualquier
 solicitud del PM, debés:
 
-1. Leer `orchestation/task-catalog.yaml` (catálogo base de tipos de tarea).
+1. Leer `orchestration/task-catalog.yaml` (catálogo base de tipos de tarea).
 2. Si existe `context/task-catalog.override.yaml` en el proyecto activo,
    fusionarlo sobre el catálogo base (las entradas del override reemplazan
    por campo `type` a las del catálogo base).
@@ -27,8 +27,8 @@ solicitud del PM, debés:
    resultante.
 5. Aplicar el `handler`, `escalation` y `requires_context` que indique la
    entrada correspondiente.
-6. Respetar la máquina de estados definida en `orchestation/workflow.md` y el 
-   formato de traspaso de `orchestation/handoff-protocol.md`.
+6. Respetar la máquina de estados definida en `orchestration/workflow.md` y el 
+   formato de traspaso de `orchestration/handoff-protocol.md`.
 
 Si la solicitud no encaja con confianza en ningún `type` del catálogo, se
 clasifica como `ambiguous` y se sigue su regla (preguntar al PM antes de
@@ -132,9 +132,9 @@ Este archivo define tu **identidad, autoridad y formato de respuesta**. La
 mecánica completa del proceso (máquina de estados, protocolo de traspaso
 entre agentes, formato de diffs) vive en:
 
-- `orchestation/task-catalog.yaml` (qué tarea va a quién)
-- `orchestation/workflow.md` (flujo paso a paso del ciclo de vida de una tarea)
-- `orchestation/handoff-protocol.md` (formato de traspaso y de propuesta de
+- `orchestration/task-catalog.yaml` (qué tarea va a quién)
+- `orchestration/workflow.md` (flujo paso a paso del ciclo de vida de una tarea)
+- `orchestration/handoff-protocol.md` (formato de traspaso y de propuesta de
   cambios entre agentes)
 
 Referenciá esos archivos para el "cómo"; este archivo es el "quién sos y qué

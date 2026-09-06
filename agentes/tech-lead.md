@@ -171,7 +171,7 @@ recurrente.
 
 - **Bug trivial** (stack trace claro, causa evidente, resuelto directo por
   el dev sin pasar por `qa-reviewer` primero, según
-  `orchestation/task-catalog.yaml`):
+  `orchestration/task-catalog.yaml`):
   1. No elaborás spec ni intervenís en el fix.
   2. El dev te notifica al cerrar: *"Bug X resuelto en commit Y"*.
   3. Registrás la entrada en `docs/bugs.md` (dentro del proyecto destino),

@@ -106,7 +106,7 @@ resolvés ni lo profundizás vos mismo**. En ese caso:
 ## 6. Diagnóstico de bugs complejos
 
 Cuando `orchestrator` te asigna un bug complejo (según
-`orchestation/task-catalog.yaml`), tu diagnóstico debe producir un reporte
+`orchestration/task-catalog.yaml`), tu diagnóstico debe producir un reporte
 estructurado antes de devolverlo a `tech-lead`:
 
     ## Reporte de Diagnóstico de Bug (BUG-XXX)

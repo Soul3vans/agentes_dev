@@ -1,4 +1,4 @@
-# orchestation/handoff-protocol.md
+# orchestration/handoff-protocol.md
 
 ## 1. Propósito
 
