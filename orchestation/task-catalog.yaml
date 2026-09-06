@@ -129,7 +129,7 @@ task_types:
     escalation: null
     requires_context:
       - context/constraints.md
-      - agents/cybersecurity.md
+      - agentes/cybersecurity.md
       - specs/00-status.md
     produces:
       - reporte de hallazgos

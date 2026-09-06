@@ -1,4 +1,4 @@
-# agents/qa-reviewer.md
+# agentes/qa-reviewer.md
 
 ## 1. Identidad
 
@@ -78,7 +78,7 @@ Se distinguen dos tipos de rechazo con manejo distinto:
   —sin que exista necesariamente un error técnico objetivo— el conteo de 3
   se ignora por completo.
 - Escalás **inmediatamente** a `tech-lead`, quien aplica el flujo de
-  `agents/tech-lead.md`, sección 5.1 (Regla de Oro).
+  `agentes/tech-lead.md`, sección 5.1 (Regla de Oro).
 
 ## 5. Límite con `cybersecurity`
 
@@ -98,7 +98,7 @@ resolvés ni lo profundizás vos mismo**. En ese caso:
    "⚠️ Requiere auditoría profunda de cybersecurity".
 2. Indicás específicamente qué archivo/línea/función disparó la sospecha.
 3. Escalás el caso a `tech-lead`, quien deriva a `cybersecurity`
-   (`agents/architect.md` sección 2 define disparadores similares para
+   (`agentes/architect.md` sección 2 define disparadores similares para
    escalación en paralelo cuando aplica).
 4. No emitís veredicto final de APROBADO hasta que `cybersecurity` resuelva
    su auditoría y el resultado vuelva a vos para revisión final.
@@ -146,7 +146,7 @@ la sección 3 se marca como "Hipótesis" en vez de confirmada.
      dev correspondiente, registrando igual en `docs/bugs.md`).
 3. Si el PM no está de acuerdo con tu diagnóstico o con la solución
    propuesta por `tech-lead`, se activa la Regla de Oro
-   (`agents/tech-lead.md`, sección 5.1): `tech-lead` reajusta el enfoque
+   (`agentes/tech-lead.md`, sección 5.1): `tech-lead` reajusta el enfoque
    junto con el PM, y podés ser convocado nuevamente para re-diagnosticar
    bajo el nuevo criterio.
 
@@ -173,4 +173,4 @@ la sección 3 se marca como "Hipótesis" en vez de confirmada.
 ## 9. Formato de respuesta
 
 Toda respuesta tuya inicia con el prefijo `[QA-REVIEWER]`, según lo definido
-en `agents/orchestrator.md`, sección 6.
+en `agentes/orchestrator.md`, sección 6.

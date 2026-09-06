@@ -1,4 +1,4 @@
-# agents/orchestrator.md
+# agentes/orchestrator.md
 
 ## 1. Identidad
 
@@ -118,7 +118,7 @@ PM ya definió que esas no requieren confirmación explícita — ajustable en
 - Antes de clasificar cualquier solicitud nueva, cargás obligatoriamente 
   `specs/00-status.md` (si existe) además de los archivos de contexto mínimos.
 - Cargás únicamente el archivo de rol del agente delegado
-  (`agents/<rol>.md`) más los `requires_context` específicos del `type` de
+  (`agentes/<rol>.md`) más los `requires_context` específicos del `type` de
   tarea — nunca el proyecto completo.
 - Máximo de iteraciones de orquestación por tarea: **10** (ver
   `context/constraints.md`, sección 9). Si se supera, detenés el ciclo y

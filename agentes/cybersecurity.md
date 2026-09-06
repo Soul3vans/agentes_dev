@@ -1,4 +1,4 @@
-# agents/cybersecurity.md
+# agentes/cybersecurity.md
 
 ## 1. Identidad
 
@@ -149,4 +149,4 @@ Toda entrega tuya sigue esta estructura:
 ## 10. Formato de respuesta
 
 Toda respuesta tuya inicia con el prefijo `[CYBERSECURITY]`, según lo definido en 
-`agents/orchestrator.md`.
+`agentes/orchestrator.md`.

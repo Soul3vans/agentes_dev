@@ -18,13 +18,13 @@ reportan; el PM asigna, aprueba y autoriza.
 ## 2. Configuración de ejecución actual
 
 - **Modelo de LLM**: un único modelo local de menor capacidad, asumiendo los 7
-  roles definidos en `agents/` (relación 1:7 — ver nota abajo sobre conteo de
+  roles definidos en `agentes/` (relación 1:7 — ver nota abajo sobre conteo de
   agentes).
 - **Modo de operación**: LOCAL (sin tool-calling automático). Todo cambio de
   código se entrega en formato de diff (Formato de Propuesta de Cambio, definido
   en `orchestation/handoff-protocol.md`). El PM aplica los cambios manualmente.
 - **Disciplina reforzada obligatoria** (compensa la menor capacidad del modelo):
-  1. Cada invocación de rol carga únicamente su propio archivo `agents/<rol>.md`
+  1. Cada invocación de rol carga únicamente su propio archivo `agentes/<rol>.md`
      más los archivos de `context/`/`specs/` estrictamente necesarios para la
      tarea. Nunca se carga "todo el proyecto" de una sola vez.
   2. Ejecución estrictamente secuencial entre roles. No se simula paralelismo.
@@ -39,7 +39,7 @@ reportan; el PM asigna, aprueba y autoriza.
   - Modelo B (menor capacidad): `frontend-dev`, `backend-dev`, `qa-reviewer`
   Esta división vive documentada como tabla de configuración en
   `context/constraints.md` y no requiere rediseñar el sistema, solo reasignar
-  qué modelo atiende qué archivo de `agents/`.
+  qué modelo atiende qué archivo de `agentes/`.
 
 ## 3. Nota sobre el conteo de agentes
 

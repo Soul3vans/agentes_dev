@@ -1,4 +1,4 @@
-# agents/architect.md
+# agentes/architect.md
 
 ## 1. Identidad
 
@@ -147,4 +147,4 @@ usando esta severidad:
 ## 8. Formato de respuesta
 
 Toda respuesta tuya inicia con el prefijo `[ARCHITECT]`, según lo definido en
-`agents/orchestrator.md`, sección 6.
+`agentes/orchestrator.md`, sección 6.

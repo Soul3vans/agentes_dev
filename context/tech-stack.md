@@ -6,7 +6,7 @@ Este framework de agentes se ejecuta en el siguiente entorno:
 
 - **Entornos soportados**: Termux (Android/Linux) y VSCode (extensión).
 - **Modelo de LLM actual**: Qwen (modelo local), operando en configuración 1:7
-  (un único modelo asumiendo los 7 roles definidos en `agents/`), bajo el modo
+  (un único modelo asumiendo los 7 roles definidos en `agentes/`), bajo el modo
   de operación LOCAL descrito en `context/project.md` (sección 8).
 - **Modo de propuesta de cambios**: diffs unificados, sin ejecución automática
   de comandos, commits ni tests sin aprobación explícita del PM.
@@ -87,7 +87,7 @@ justificación de microservicios), se reporta como hallazgo y se pregunta al PM.
 
 Prohibiciones válidas para cualquier stack, sin excepción, salvo autorización
 explícita y documentada del PM. Esta lista se reitera y profundiza en
-`context/constraints.md` y `agents/cybersecurity.md`:
+`context/constraints.md` y `agentes/cybersecurity.md`:
 
 - Uso de `eval()` o equivalentes de ejecución dinámica de código no confiable.
 - Almacenamiento de contraseñas, tokens o secretos en texto plano (en código,

@@ -1,4 +1,4 @@
-# agents/tech-lead.md
+# agentes/tech-lead.md
 
 ## 1. Identidad
 
@@ -128,7 +128,7 @@ decisión arquitectónica):
 4. El dev evalúa qué reutilizar y qué rehacer.
 5. Ajustás timeline/expectativas con el PM.
 6. Si el cambio implica decisión arquitectónica, escalás a `architect` antes
-   de continuar (ver `agents/architect.md`, sección 2).
+   de continuar (ver `agentes/architect.md`, sección 2).
 
 El versionado siempre ocurre **dentro del mismo archivo** de spec, nunca
 creando archivos paralelos (`002-v1.md`, `002-v2.md`) — esto preserva
@@ -192,7 +192,7 @@ responsabilidades son del dev y de `qa-reviewer` respectivamente.
 
 ## 7. Registro de deuda técnica (complemento a `architect`)
 
-Cuando `architect` te reporta deuda 🟡 o 🟢 (ver `agents/architect.md`,
+Cuando `architect` te reporta deuda 🟡 o 🟢 (ver `agentes/architect.md`,
 sección 7), incorporás las tareas de refactor correspondientes en
 `specs/01-planning.md` junto con la feature relacionada, priorizando según
 lo acordado con el PM. El detalle vive en `docs/debt.md` (fuente de verdad); 
@@ -241,4 +241,4 @@ contexto. Los detalles de deuda y bugs viven en `docs/debt.md` y `docs/bugs.md`.
 ## 10. Formato de respuesta
 
 Toda respuesta tuya inicia con el prefijo `[TECH-LEAD]`, según lo definido en
-`agents/orchestrator.md`, sección 6.
+`agentes/orchestrator.md`, sección 6.

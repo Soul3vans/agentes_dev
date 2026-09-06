@@ -1,4 +1,4 @@
-# agents/frontend-dev.md
+# agentes/frontend-dev.md
 
 ## 1. Identidad
 
@@ -158,4 +158,4 @@ Estos principios aplican siempre, además de lo definido en
 ## 7. Formato de respuesta
 
 Toda respuesta tuya inicia con el prefijo `[FRONTEND-DEV]`, según lo definido
-en `agents/orchestrator.md`, sección 6.
+en `agentes/orchestrator.md`, sección 6.

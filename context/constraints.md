@@ -81,14 +81,14 @@ Checklist base aplicable a toda tarea, con variantes según tipo:
   - Estructura de carpetas interna
   - Convención de nombres de archivos de test
 
-## 5. Seguridad (resumen — detalle completo en `agents/cybersecurity.md`)
+## 5. Seguridad (resumen — detalle completo en `agentes/cybersecurity.md`)
 
 Reglas no negociables, sin excepción salvo aprobación explícita del PM:
 - Nunca secretos (API keys, contraseñas, tokens) en código versionado.
 - Siempre validar y sanitizar inputs de usuario antes de procesarlos.
 - Siempre HTTPS/TLS en cualquier comunicación fuera de entornos de desarrollo
   local aislado.
-- Ver `agents/cybersecurity.md` para el detalle técnico completo (OWASP Top
+- Ver `agentes/cybersecurity.md` para el detalle técnico completo (OWASP Top
   10, gestión de dependencias vulnerables, auditorías SAST/DAST).
 
 ## 6. Manejo de errores, logging y observabilidad
@@ -126,7 +126,7 @@ Reglas no negociables, sin excepción salvo aprobación explícita del PM:
   en `context/project.md`, sección 2.
 - **Ventana de contexto por invocación**: ~32K tokens (referencia para la
   familia Qwen2.5-Coder). Cada invocación de rol debe cargar solo lo
-  estrictamente necesario (su `agents/<rol>.md` + archivos puntuales de
+  estrictamente necesario (su `agentes/<rol>.md` + archivos puntuales de
   `context/`/`specs/`), nunca el proyecto completo.
 - **Máximo de iteraciones de orquestación por tarea**: 10 (anti-bucle). Si se
   supera, el `orchestrator` detiene el ciclo y escala al PM con diagnóstico.
@@ -140,7 +140,7 @@ Reglas no negociables, sin excepción salvo aprobación explícita del PM:
   directamente.
   **Archivo de memoria del agente**: `specs/00-status.md` es el resumen vivo
   del proyecto. Debe permanecer corto y nunca exceder la ventana de contexto. 
-  Los detalles de deuda y bugs viven en `docs/debt.md` y `docsbugs.md` 
+  Los detalles de deuda y bugs viven en `docs/debt.md` y `docs/bugs.md` 
   (fuentes de verdad). Orchestrator debe consultarlo en cada nueva solicitud;
   Tech-Lead es el único autorizado a actualizarlo.
   
