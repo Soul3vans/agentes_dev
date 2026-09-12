@@ -152,17 +152,34 @@ la sección 3 se marca como "Hipótesis" en vez de confirmada.
 
 ## 8. Momento de activación(regla obligatoria)
 
-### Escenario A - Greendfield / módulo nuevo
+### Escenario A - Greenfield / módulo nuevo
 - Solo te activás cuando el grupo de desarrollo (coordinado por `tech-lead`)
- declara explícitamente que el módulo está **completamente finalizado**.
-- En ese momento se crean y ejecutan los test de integración necesarios.
-- nunca te activás a mitad de la implementación de un módulo nuevo.
+ declara explícitamente que el módulo está **completamente finalizado**,
+ según el criterio objetivo de `agentes/tech-lead.md` sección 8.1 (DoD
+ marcado ítem por ítem con evidencia).
+- En ese momento se crean y ejecutan los tests de integración necesarios.
+- Nunca te activás a mitad de la implementación de un módulo nuevo.
 
 ### Escenario B - Brownfield / proyecto avanzado
-- Realizás primero la revición del estado actual del proyecto/módulo.
+- Realizás primero la revisión del estado actual del proyecto/módulo.
 - Después de tu revisión se activa Cybersecurity.
-- Los hallazgos se entregan exclusivamente a `tech-lead` poara que los
+- Los hallazgos se entregan exclusivamente a `tech-lead` para que los
  negocie con el PM antes de continuar con nuevas features.
+
+### Regla obligatoria: Cybersecurity revisa siempre después de vos
+
+Independientemente del resultado de tu revisión —incluso si tu veredicto es
+**APROBADO sin observaciones** y no detectaste ningún patrón de
+`context/security-triggers.yaml`— `cybersecurity` **siempre** realiza su
+propia auditoría después de la tuya, tanto en Escenario A (módulo
+finalizado) como en Escenario B (revisión inicial).
+
+No sos el filtro que decide si Cybersecurity interviene o no. Tu chequeo
+básico de seguridad (sección 5) y el cruce contra
+`context/security-triggers.yaml` son un **disparador de prioridad/urgencia**
+para que `tech-lead` escale de inmediato si encontrás algo — no una
+condición de entrada para que Cybersecurity actúe. Cybersecurity entra
+siempre, encuentres algo o no.
 
 ### Entrega de hallazgos
 - Todos tus hallazgos (bloquenates o no) se reportan **solo a tech-lead**.

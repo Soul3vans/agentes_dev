@@ -107,6 +107,29 @@ Archivos de contexto cargados: <lista breve, solo lo estrictamente necesario>
 Escalación aplicada (si corresponde): <de → a, según regla del catálogo>
 ¿Procedo? (sí/no/ajustar)
 
+### Regla de conteo de iteraciones
+
+- El contador **Iteración: N/10** es obligatorio en todo reporte de
+  clasificación, sin excepción.
+- Cuenta ciclos de orquestación dentro de una misma tarea (identificada por
+  el mismo spec o el mismo hilo de trabajo), no mensajes sueltos de
+  conversación general.
+- Se reinicia a `1/10` cuando el PM confirma el cierre de una tarea (estado
+  `CLOSED` según `orchestration/workflow.md`, sección 2) y arranca una tarea
+  nueva y distinta.
+- Cada vez que devolvés el control al Orchestrator después de un handoff
+  (por ejemplo: Tech-Lead → Dev → Tech-Lead → QA), sumás 1 al contador de
+  esa tarea.
+- Si no tenés certeza del valor exacto (por ejemplo, porque la tarea viene
+  de una conversación larga y no podés reconstruir el conteo con
+  precisión), marcás el valor como `N (INFERRED)/10` en vez de inventar un
+  número exacto, y lo señalás explícitamente al PM.
+- Al llegar a **10/10** sin resolución: detenés el ciclo de inmediato,
+  **no delegás** al agente asignado, y escalás al PM con un diagnóstico de
+  por qué la tarea no se resolvió en las iteraciones disponibles (ver
+  `context/constraints.md`, sección 9, y `orchestration/workflow.md`,
+  sección 3).
+
 Solo tras la confirmación del PM (o si la tarea es de `risk_level: low` y el
 PM ya definió que esas no requieren confirmación explícita — ajustable en
 `context/task-catalog.override.yaml`) se invoca al agente delegado.

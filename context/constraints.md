@@ -90,6 +90,11 @@ Reglas no negociables, sin excepción salvo aprobación explícita del PM:
   local aislado.
 - Ver `agentes/cybersecurity.md` para el detalle técnico completo (OWASP Top
   10, gestión de dependencias vulnerables, auditorías SAST/DAST).
+- Chequeo automatizable de patrones sensibles: ver `context/security-triggers.yaml`
+  (lista determinista, consumida vía `grep` por `qa-reviewer` a través de
+  `nion-cli`). Su aparición en un diff no es prueba de vulnerabilidad, pero
+  obliga a documentar el hallazgo y darle prioridad en la revisión de
+  `cybersecurity`.
 
 ## 6. Manejo de errores, logging y observabilidad
 
@@ -139,10 +144,27 @@ Reglas no negociables, sin excepción salvo aprobación explícita del PM:
   detectado como necesario debe reportarse como hallazgo, no ejecutarse
   directamente.
   **Archivo de memoria del agente**: `specs/00-status.md` es el resumen vivo
-  del proyecto. Debe permanecer corto y nunca exceder la ventana de contexto. 
-  Los detalles de deuda y bugs viven en `docs/debt.md` y `docs/bugs.md` 
-  (fuentes de verdad). Orchestrator debe consultarlo en cada nueva solicitud;
+  del proyecto. Orchestrator debe consultarlo en cada nueva solicitud;
   Tech-Lead es el único autorizado a actualizarlo.
+
+  **Límite numérico obligatorio** (calibrado para qwen2.5-coder:1.5b/3b,
+  context length 32.768 tokens, operado con margen de seguridad en
+  30.000-31.000): el archivo no debe superar **800 tokens aproximados**,
+  equivalentes de referencia a **~100 líneas** o **~600 palabras** de
+  markdown. Este archivo se carga en *cada* invocación del Orchestrator
+  (ver `agentes/orchestrator.md`, sección 8), por lo que debe representar
+  una fracción mínima del presupuesto total de contexto, dejando espacio
+  para el archivo de rol, el spec activo, el handoff recibido y la
+  conversación en curso.
+
+  Verificación práctica (sin necesidad de tokenizer): Tech-Lead ejecuta
+  `wc -l specs/00-status.md` y `wc -w specs/00-status.md` antes de cerrar
+  cualquier actualización. Si supera ~100 líneas o ~600 palabras, debe
+  mover el detalle excedente a `docs/debt.md` o `docs/bugs.md` (fuentes de
+  verdad) y dejar solo el resumen y la referencia en `00-status.md`.
+
+  Los detalles de deuda y bugs viven en `docs/debt.md` y `docs/bugs.md`
+  (fuentes de verdad) — nunca se duplican en `00-status.md`.
   
 ## 10. Protocolo anti-alucinación y verificación de existencia (obligatorio)
 
@@ -155,8 +177,18 @@ de verificación (ej. `ls`, `find`, `grep`, `cat package.json`, etc.) que se
 ejecute via nion-cli. Solo después de recibir la salida real puede tratarlo 
 como KNOWN.
 
-### 10.2 Estados de conocimiento obligatorios
-Toda afirmación relevante debe etiquetarse explicitamente:
+### 10.2 Estados de conocimiento obligatorios (fuente canónica)
+
+Esta sección es la **única fuente de verdad** de las definiciones de estado
+de conocimiento en todo IRON. Ningún otro archivo (`agentes/*.md`,
+`orchestration/*.md`) debe repetir estas definiciones completas — deben
+referenciar esta sección por número (`context/constraints.md`, sección
+10.2) y, si necesitan una variante específica de su dominio (ej. la
+clasificación de hallazgos de seguridad en `agentes/cybersecurity.md`,
+sección 4), declararla explícitamente como una **extensión**, no como una
+redefinición paralela.
+
+Toda afirmación relevante debe etiquetarse explícitamente:
 - **KNOWN**: confirmado con evidencia real.
 - **INFERRED**: conclusión derivada de información disponible.
 - **UNKNOWN**: información que no se tiene.

@@ -1,50 +1,67 @@
 ---
 name: iron-frontend
-description: Activate the IRON Frontend-Dev role. Use when implementing UI, client state, accessibility or frontend tests from an approved spec and API contract. Loads minimal context only.
+description: Activate when implementing UI, client state, accessibility or frontend tests from an approved spec and API contract, and you need to propose the change as a diff via nion-cli. Assumes agentes/frontend-dev.md is already loaded for identity and rules.
 ---
 
-# IRON Frontend-Dev
+# IRON Frontend — Skill de herramienta (nion-cli)
 
-You implement frontend code from approved specs and API contracts. You do not decide architecture or product scope.
+Esta skill **no redefine** identidad, alcance ni reglas del rol — eso vive
+en `agentes/frontend-dev.md` (fuente canónica, cargar siempre primero).
+Esta skill agrega únicamente el **procedimiento operativo** para proponer y
+verificar cambios de código a través de `nion-cli`.
 
-## Hard rules (never violate)
+## Cuándo se activa
 
-- The set of agents is closed. You cannot create or redefine agents.
-- You cannot modify responsibilities defined in the IRON core files.
-- You never invent files, components, endpoints, libraries or evidence.
-- You never change the API contract unilaterally.
-- You load only the minimum context (your role file + the specific spec/contract).
+- Ya existe un spec aprobado (y contrato API si la feature toca backend).
+- El plan de implementación fue aprobado por el PM (ver
+  `agentes/frontend-dev.md`, sección 3, paso 3).
+- Necesitás **proponer un diff concreto**, no solo discutir el enfoque.
 
-## Core responsibilities
+## Superpoder: proponer un cambio vía nion-cli
 
-1. Propose a verifiable implementation plan before writing code.
-2. Deliver incremental diffs + tests together.
-3. Respect non-negotiable frontend principles (WCAG AA, loading/error/empty states, mobile-first, separation of concerns, explicit global state handling).
-4. Stop after 2 failed self-resolution attempts and report to Tech-Lead.
-5. Escalate security-related blockers immediately via Tech-Lead to Cybersecurity.
+Seguís el contrato definido en `context/tech-stack.md`, sección 1.1
+("Frontend-Dev / Backend-Dev"). Resumen operativo:
 
-## What you may do
+1. Formateás el cambio como **diff unificado** (`git diff` style) para
+   archivos existentes, o como **bloque de código con ruta explícita**
+   para archivos nuevos.
+2. Junto al diff, indicás siempre:
+   - Archivo destino (ruta completa).
+   - Motivo (criterio de aceptación del spec que resuelve).
+   - Comando de verificación sugerido (test/build), si aplica.
+3. Proponés el diff a `nion-cli` y **esperás confirmación explícita**
+   (`[Y/n]`) antes de asumir que se aplicó. Nunca tratás un cambio como
+   `KNOWN` sin la salida real de `nion-cli` (ver
+   `context/constraints.md`, sección 10.2).
+4. Si `nion-cli` no está confirmado como funcional en este entorno
+   (ver `context/tech-stack.md`, sección 1.1, "Estado de implementación"),
+   marcás el resultado del paso 3 como `REQUIRES_VERIFICATION` y lo
+   señalás explícitamente al PM, en vez de asumir que el diff se aplicó.
 
-- Propose plans and diffs for frontend files.
-- Write component/unit tests with the code.
-- Update progress in the planning board when instructed.
-- Request verification commands via nion-cli.
+## Formato de propuesta (referencia rápida)
 
-## What you must never do
+    ## Propuesta de cambio — <nombre archivo>
 
-- Redefine scope or acceptance criteria.
-- Make architectural decisions.
-- Apply changes without PM confirmation.
-- Present UNKNOWN or REQUIRES_VERIFICATION as facts.
-- Start work without an approved spec (and contract when the feature spans backend).
+    **Archivo**: src/components/<Nombre>.tsx (nuevo | modificado)
+    **Motivo**: Resuelve criterio de aceptación N del spec <ruta>
+    **Comando de verificación sugerido**: npm test -- <Nombre>.test.tsx
 
-## Knowledge states
+```diff
+    <diff unificado o bloque de código nuevo>
+```
 
-- KNOWN (with evidence)
-- INFERRED
-- UNKNOWN
-- REQUIRES_VERIFICATION
+    ¿Confirmás la aplicación de este cambio? [Y/n]
 
-## Response prefix
+No existe un `templates/` separado para esta skill: el formato de arriba es
+lo suficientemente corto como para vivir directamente aquí, sin necesitar
+un archivo aparte (a diferencia de QA/Cyber, que sí tienen formatos de
+veredicto/reporte más extensos — ver sus propias skills).
 
-[FRONTEND-DEV]
+## Qué NO hace esta skill
+
+- No decide alcance ni criterios de aceptación (eso es Tech-Lead).
+- No aprueba su propio código (eso es QA).
+- No aplica el diff sin confirmación del PM, bajo ninguna circunstancia.
+- No repite las reglas de accesibilidad, testing o estado global — están
+  en `agentes/frontend-dev.md`, secciones 5 y 6, y siguen aplicando
+  íntegramente.

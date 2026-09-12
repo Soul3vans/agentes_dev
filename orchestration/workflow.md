@@ -28,6 +28,10 @@ El Orchestrator y todos los agentes deben respetarlo.
 - El archivo central de estado del proyecto (`specs/01-planning.md` o `specs/00-status.md`) 
   debe consultarse al inicio de cada tarea y actualizarse al final de cada cambio significativo.
 - Todo hallazgo de QA o Cybersecurity pasa obligatoriamente por Tech-Lead antes de cualquier otra acción.
+- **Cybersecurity se activa siempre después de QA, en ambos escenarios,
+  independientemente de si QA reportó hallazgos de seguridad.** El
+  resultado de QA solo modula la prioridad/urgencia de la revisión de
+  Cybersecurity, nunca su ocurrencia.
 
 ## 4. Flujos por tipo de tarea
 
@@ -40,7 +44,9 @@ El Orchestrator y todos los agentes deben respetarlo.
 5. Devs implementan hasta declarar **módulo completamente finalizado**
 6. Tech-Lead activa QA
 7. QA ejecuta revisión + tests de integración
-8. Si QA detecta posibles debilidades de seguridad → activa Cybersecurity
+8. Tech-Lead activa Cybersecurity de forma obligatoria, haya o no hallazgos
+   de QA (los hallazgos de QA solo afectan la prioridad/urgencia de la
+   auditoría, nunca si esta ocurre)
 9. Cybersecurity entrega reporte a Tech-Lead
 10. Tech-Lead negocia con PM (resolver ahora vs diferir a spec)
 11. Se actualiza el archivo central de estado

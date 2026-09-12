@@ -14,6 +14,60 @@ Este framework de agentes se ejecuta en el siguiente entorno:
   a una API con tool-use (modo AGÉNTICO), o se incorpora un segundo modelo
   (ver ruta de escalado en `context/project.md`, sección 2).
 
+## 1.1 Contrato mínimo de `nion-cli` (estado actual, runtime real)
+
+Esta sección define el alcance funcional **verificado y exigible hoy** de
+`nion-cli`. Cualquier capacidad no descrita aquí (API REST, webhooks,
+aplicación automática sin confirmación, ejecución concurrente) pertenece a
+`orchestration/nion-cli-api.md`, `orchestration/concurrency.md` y
+`orchestration/task-queue.md` — marcados **DISEÑO FUTURO** — y ningún agente
+debe asumir que están disponibles.
+
+### Operaciones soportadas por rol
+
+**Frontend-Dev / Backend-Dev**
+1. Proponen un cambio como diff unificado (o bloque de código con ruta
+   explícita para archivos nuevos).
+2. `nion-cli` muestra el diff al PM y solicita confirmación (`[Y/n]`).
+3. Si el PM aprueba: `nion-cli` aplica el diff y, si corresponde, ejecuta el
+   comando asociado (build/test/dev server), devolviendo `stdout`/`stderr`
+   real al agente.
+4. Si el PM rechaza: no se aplica nada. El agente no continúa hasta recibir
+   indicación del PM o de `tech-lead`.
+
+**QA-Reviewer / Cybersecurity**
+1. Proponen el comando exacto de verificación/análisis necesario (tests,
+   linter, `grep` contra `context/security-triggers.yaml`, `npm audit`,
+   etc.).
+2. `nion-cli` muestra el comando al PM y solicita confirmación (`[Y/n]`).
+3. Si el PM aprueba: `nion-cli` lo ejecuta y devuelve `stdout`/`stderr` real.
+4. Si el PM rechaza: el veredicto queda como "APROBADO CON OBSERVACIONES —
+   pendiente de verificación en ejecución" (QA) o el hallazgo se marca como
+   "No verificado — pendiente de aprobación de ejecución" (Cyber), nunca
+   como hecho confirmado.
+
+### Regla de estado de conocimiento
+
+Ningún agente puede tratar como **KNOWN** un resultado de ejecución
+(aplicación de diff, resultado de test, salida de análisis) sin haber
+recibido la salida real de `nion-cli` en ese mismo turno o en un handoff que
+la incluya explícitamente (ver `orchestration/handoff-protocol.md`, sección
+3).
+
+### Estado de implementación
+
+- Confirmación `[Y/n]` antes de aplicar/ejecutar: **REQUIRES_VERIFICATION**
+  — descrita en todos los `agentes/*.md`, pero no hay evidencia en este
+  repositorio de que `nion-cli` la implemente; el único artefacto real
+  disponible es el wrapper `scripts/iron` (invocación de rol + prompt).
+- Aplicación de diffs y captura de `stdout`/`stderr`: **REQUIRES_VERIFICATION**
+  por el mismo motivo.
+- Hasta que estas dos capacidades se confirmen con evidencia (ej. código
+  fuente de `nion-cli` revisado, o una ejecución real documentada), todo
+  agente debe tratar "el PM confirmó y `nion-cli` ejecutó" como una
+  afirmación que requiere verificación explícita en cada handoff, no como
+  un hecho asumido por defecto.
+
 ## 2. Señales de detección de stack (Escenario B — Brownfield)
 
 Al analizar un repositorio existente, el `orchestrator` debe buscar, en orden

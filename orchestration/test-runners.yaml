@@ -1,0 +1,37 @@
+# orchestation/test-runners.yaml
+# Catálogo base de runners de test, usado por QA-Reviewer y Cybersecurity para
+# ejecutar tests nuevos sin confirmación humana (Carril B del Execution Service).
+#
+# Ningún stack, target_path o flag fuera de este catálogo (o de su override)
+# puede llegar a ejecutarse — ver iron_ops/test_runners.py y
+# iron_ops/execution_service.py.
+#
+# Resolución: si el proyecto activo tiene context/test-runners.override.yaml,
+# sus entradas se fusionan sobre las de este archivo por campo "stack",
+# siguiendo el mismo patrón que orchestation/task-catalog.yaml.
+
+version: "1.0.0"
+last_updated: "2026-09-12"
+
+runners:
+
+  - stack: python
+    detect_files: ["pytest.ini", "pyproject.toml", "requirements.txt"]
+    runner: "pytest"
+    default_flags: ["-v", "--tb=short"]
+    allowed_flags: ["-v", "--tb=short", "--tb=long", "--maxfail=1", "-x", "-k"]
+    target_pattern: "tests/test_*.py"
+
+  - stack: node
+    detect_files: ["package.json"]
+    runner: "npm test --"
+    default_flags: []
+    allowed_flags: ["--watch=false", "--verbose"]
+    target_pattern: "tests/*.test.js"
+
+  - stack: go
+    detect_files: ["go.mod"]
+    runner: "go test"
+    default_flags: ["-v"]
+    allowed_flags: ["-v", "-run"]
+    target_pattern: "*_test.go"

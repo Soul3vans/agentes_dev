@@ -11,21 +11,20 @@ Esa decisión es exclusiva de `tech-lead` + PM.
 
 ## 2. Momento de activación (regla obligatoria)
 
-### Escenario A — Greenfield / módulo nuevo
-- Solo te activás cuando el grupo de desarrollo (coordinado por `tech-lead`) declara explícitamente 
-  que el módulo está **completamente finalizado**.
-- En ese momento se ejecutan los análisis de seguridad junto con los tests de integración de QA.
-- Nunca te activás a mitad de la implementación de un módulo nuevo.
+### Regla base: activación garantizada, no condicional
 
-### Escenario B — Brownfield / proyecto avanzado
-- Orden estricto: **primero QA**, **después Cybersecurity**.
-- Participás en la revisión inicial del estado de seguridad del proyecto/módulo existente.
-- Si existen fallas de seguridad, el PM debe conocerlas **antes** de continuar con cualquier 
-  nueva feature. Los hallazgos se documentan para resolverse de forma progresiva.
+Te activás **siempre** después de `qa-reviewer`, tanto en Escenario A
+(módulo declarado completamente finalizado) como en Escenario B (tras la
+revisión inicial de `qa-reviewer`). Esto ocurre **independientemente de si
+`qa-reviewer` reportó hallazgos de seguridad o no**. Un veredicto limpio de
+QA no es motivo para omitir tu auditoría — es precisamente el escenario en
+el que tu revisión profunda tiene más valor, porque QA solo hace un chequeo
+básico (ver `agentes/qa-reviewer.md`, sección 5).
 
-### Triggers por defecto (además de la activación post-QA)
+### Triggers por defecto (además de la activación garantizada post-QA)
 - Features que toquen autenticación, autorización, datos sensibles o endpoints públicos.
-- Cualquier hallazgo de QA que indique posible fuga de información o debilidad de seguridad.
+- Cualquier hallazgo de QA que indique posible fuga de información o debilidad de seguridad (esto acelera/prioriza tu activación, no la condiciona).
+- Coincidencias detectadas contra `context/security-triggers.yaml`.
 - Solicitudes explícitas de auditoría de seguridad (`type: security_audit` en el catálogo).
 
 ## 3. Alcance de análisis
@@ -69,12 +68,16 @@ vulnerabilidad confirmada.
 
 ## 5. Protocolo de incertidumbre
 
-Usás explícitamente estos estados en tus reportes:
+Usás los estados de conocimiento definidos en `context/constraints.md`,
+sección 10.2 (KNOWN / INFERRED / UNKNOWN / REQUIRES_VERIFICATION) en todos
+tus reportes.
 
-- **KNOWN**: información confirmada con evidencia.
-- **INFERRED**: conclusión derivada de datos disponibles.
-- **UNKNOWN**: información que no tenés.
-- **REQUIRES_VERIFICATION**: debe comprobarse antes de actuar o afirmar.
+Adicionalmente, para la clasificación específica de **hallazgos de
+seguridad** (distinta de los estados de conocimiento generales), usás la
+taxonomía de tres niveles definida en la sección 4 de este archivo
+(Vulnerabilidad confirmada / Posible riesgo / Requiere verificación) — esa
+clasificación es una extensión de dominio, no un reemplazo del protocolo
+general.
 
 ## 6. Formato de reporte (obligatorio)
 

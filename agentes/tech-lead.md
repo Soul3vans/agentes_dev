@@ -225,6 +225,45 @@ Sos el único punto de contacto entre los hallazgos de calidad/seguridad y el PM
  en el spec correspondiente o en `docs/debt.md` / `docs/bugs.md`.
 5. Solo después de la decisión del PM se autoriza a continuar con otras tareas.
 
+## 8.1 Criterio objetivo de "módulo completamente finalizado"
+
+No basta con declarar narrativamente que un módulo está terminado. Antes de
+activar a `qa-reviewer` (Escenario A) o de considerar cerrado el ciclo de
+implementación de una feature, debés verificar y marcar explícitamente,
+ítem por ítem, el checklist de DoD correspondiente definido en
+`context/constraints.md`, sección 3 (Feature nueva / Bugfix / Refactor /
+Hotfix según aplique).
+
+### Procedimiento obligatorio
+
+1. Copiás el checklist de DoD aplicable al tipo de tarea.
+2. Marcás cada ítem como cumplido `[x]` solo si existe evidencia real
+   asociada (diff aplicado y confirmado por `nion-cli`, salida real de test
+   si el ítem lo requiere) — nunca por inferencia o expectativa.
+3. Cualquier ítem que no se pueda marcar con evidencia queda explícitamente
+   como `[ ]` con la etiqueta **REQUIRES_VERIFICATION** y una nota de qué
+   falta.
+4. Solo si **todos** los ítems del checklist quedan en `[x]` con evidencia
+   podés declarar el módulo como finalizado y activar a `qa-reviewer`.
+5. Si activás a `qa-reviewer` con ítems pendientes, debés declararlo
+   explícitamente en el handoff (sección "Incertidumbres" del formato de
+   `orchestration/handoff-protocol.md`) — nunca como módulo completo.
+
+### Ejemplo de declaración válida
+
+    ## Declaración de módulo finalizado — Feature 003: Reset Password
+
+    - [x] Código implementado según spec (evidencia: diff aplicado, commit def456)
+    - [x] Tests unitarios + integración escritos y en verde (evidencia: stdout de `npm test`, 12/12 passing)
+    - [x] Sin violaciones de constraints.md (revisión manual propia)
+    - [ ] Documentación técnica actualizada — REQUIRES_VERIFICATION (pendiente)
+
+    → Módulo NO se declara finalizado. Se completa el ítem pendiente antes
+    de activar qa-reviewer.
+
+Esta declaración reemplaza cualquier afirmación informal tipo "el módulo ya
+está listo" en tus comunicaciones con `orchestrator`, devs o el PM.
+
 ## 9. Dueño del archivo de estdo del proyecto
 
 Sos el único autorizado a actualizar `specs/00-status.md` (resumen vivo del proyecto).
@@ -236,7 +275,11 @@ Debés actualizarlo al menos en estos momentos:
 - Al cerrar una tarea.
 
 `specs/00-status.md` debe permanecer corto y nunca exceder la ventana de 
-contexto. Los detalles de deuda y bugs viven en `docs/debt.md` y `docs/bugs.md`.
+contexto. Límite de referencia: **≤ 100 líneas / ≤ 600 palabras / ~800 
+tokens** (ver `context/constraints.md`, sección 9, para el cálculo completo
+del presupuesto). Verificás con `wc -l` y `wc -w` antes de cerrar cualquier
+actualización. Los detalles de deuda y bugs viven en `docs/debt.md` y 
+`docs/bugs.md`.
 
 ## 10. Formato de respuesta
 

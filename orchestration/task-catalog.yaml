@@ -18,7 +18,9 @@ task_types:
       Nueva funcionalidad solicitada por el PM. Punto de entrada obligatorio
       para todo requerimiento funcional nuevo.
       En Escenario A (Greenfield) se sigue el flujo completo hasta módulo
-      finalizado → QA → Cybersecurity.
+      finalizado → QA → Cybersecurity (Cybersecurity se activa siempre
+      después de QA, según agentes/qa-reviewer.md sección 8 y
+      agentes/cybersecurity.md sección 2).
       En Escenario B (Brownfield) primero se revisa el estado existente
       (project_review) antes de planificar la feature.
     handler: tech-lead
@@ -30,9 +32,18 @@ task_types:
         arquitectura existente.
       to: architect
       then_returns_to: tech-lead   # tras el ADR, tech-lead retoma la descomposición
+    security_check:
+      source: context/security-triggers.yaml
+      applies_to: qa-reviewer
+      note: >
+        qa-reviewer cruza el diff/módulo contra los patrones de este archivo
+        (vía grep en nion-cli) como disparador de PRIORIDAD para
+        cybersecurity, no como condición de entrada — cybersecurity se
+        activa siempre, haya o no coincidencias.
     requires_context:
       - context/project.md
       - context/constraints.md
+      - context/security-triggers.yaml
       - specs/00-status.md
     produces:
       - specs/*.md
@@ -92,8 +103,17 @@ task_types:
         (no un simple fix).
       to: architect
       then_returns_to: tech-lead
+    security_check:
+      source: context/security-triggers.yaml
+      applies_to: qa-reviewer
+      note: >
+        Aplica solo cuando el routing_rule asigna el bug a qa-reviewer
+        (bug complejo). Si el fix propuesto por dev_by_layer coincide con
+        algún patrón de security-triggers.yaml, tech-lead debe activar
+        cybersecurity antes de cerrar la tarea, incluso en un bug trivial.
     requires_context:
       - specs/*.md   # si existe spec relacionado a la funcionalidad afectada
+      - context/security-triggers.yaml
       - specs/00-status.md
     produces:
       - fix (diff)

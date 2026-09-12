@@ -1,0 +1,85 @@
+# context/security-triggers.yaml
+# Lista determinista de patrones que disparan revisión de seguridad.
+# Fuente única de verdad para el chequeo automatizable vía grep en nion-cli.
+# Se actualiza obligatoriamente cuando cybersecurity confirma una
+# vulnerabilidad de un tipo no cubierto aquí (ver context/principios.md,
+# Principio 10 — Feedback Loop Cerrado).
+#
+# Uso: QA-Reviewer propone el comando
+#   grep -riEf context/security-triggers.yaml <ruta_del_diff_o_módulo>
+# vía nion-cli, y trata la salida real como evidencia (KNOWN).
+# Esta lista NO reemplaza la revisión de Cybersecurity (que ocurre siempre,
+# ver agentes/qa-reviewer.md §8 y agentes/cybersecurity.md §2) — es un
+# disparador adicional para escalación inmediata si aparece antes de que
+# Cyber llegue a revisar.
+
+version: "1.0.0"
+last_updated: "2026-09-06"
+updated_by: "Tech-Lead (auditoría IRON)"
+
+# Formato: lista plana de patrones regex (case-insensitive), uno por línea,
+# consumible directamente por `grep -E`.
+patterns:
+  # Autenticación / sesión
+  - "password"
+  - "passwd"
+  - "auth"
+  - "login"
+  - "session"
+  - "jwt"
+  - "token"
+  - "cookie"
+  - "oauth"
+  - "refresh_token"
+
+  # Autorización / control de acceso
+  - "role"
+  - "permission"
+  - "is_admin"
+  - "isAdmin"
+  - "access_control"
+  - "rbac"
+
+  # Criptografía
+  - "encrypt"
+  - "decrypt"
+  - "cipher"
+  - "md5"
+  - "sha1"
+  - "hash"
+  - "secret_key"
+  - "private_key"
+  - "api_key"
+
+  # Inyección / ejecución dinámica
+  - "eval\\("
+  - "exec\\("
+  - "child_process"
+  - "os\\.system"
+  - "subprocess"
+  - "SELECT .* FROM"    # heurística simple para SQL embebido
+  - "\\$\\{.*\\}"        # interpolación sospechosa en queries/templates
+
+  # Datos sensibles
+  - "ssn"
+  - "credit_card"
+  - "tarjeta"
+  - "personal_data"
+  - "pii"
+
+  # Superficie de red / endpoints
+  - "endpoint"
+  - "@app\\.route"
+  - "router\\.(get|post|put|delete)"
+  - "cors"
+  - "rate_limit"
+
+# Registro de cambios (obligatorio ante cada adición, según Principio 10)
+changelog:
+  - version: "1.0.0"
+    date: "2026-09-06"
+    reason: >
+      Creación inicial de la lista base, derivada de agentes/cybersecurity.md
+      sección 3 (dominios de análisis) y context/constraints.md sección 5.
+      No proviene aún de un hallazgo confirmado en producción — es la línea
+      base de arranque del sistema.
