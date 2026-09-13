@@ -23,8 +23,8 @@ from . import command_parser
 from .execution_service import run_workspace_command
 
 IRON_HOME = Path(os.environ.get("IRON_HOME", os.path.expanduser("~/.iron")))
-PROYECTOS_DIR = Path(os.environ.get("IRON_PROYECTOS_DIR", os.path.expanduser("~/agente_sistema/proyectos")))
-GITHUB_DIR = Path(os.environ.get("IRON_GITHUB_DIR", os.path.expanduser("~/agente_sistema/github")))
+PROYECTOS_DIR = Path(os.environ.get("IRON_PROYECTOS_DIR", os.path.expanduser("~/proyectos/nuevos")))
+GITHUB_DIR = Path(os.environ.get("IRON_GITHUB_DIR", os.path.expanduser("~/proyectos/github")))
 STATE_FILE = IRON_HOME / "projects.json"
 
 
