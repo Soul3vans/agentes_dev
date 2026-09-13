@@ -9,7 +9,12 @@ Este framework de agentes se ejecuta en el siguiente entorno:
   (un único modelo asumiendo los 7 roles definidos en `agentes/`), bajo el modo
   de operación LOCAL descrito en `context/project.md` (sección 8).
 - **Modo de propuesta de cambios**: diffs unificados, sin ejecución automática
-  de comandos, commits ni tests sin aprobación explícita del PM.
+  de comandos, commits ni tests sin aprobación explícita del PM — esto aplica
+  a cambios de código de producción (`frontend-dev`/`backend-dev`). Las
+  operaciones de Project Service (crear/clonar/cambiar de proyecto) y la
+  ejecución de tests nuevos por `qa-reviewer`/`cybersecurity` son la
+  excepción explícita definida en `orchestration/task-catalog.yaml`
+  (`requires_human_confirmation: false`) y `orchestration/test-runners.yaml`.
 - Esta sección debe actualizarse si se cambia de entorno de ejecución, se migra
   a una API con tool-use (modo AGÉNTICO), o se incorpora un segundo modelo
   (ver ruta de escalado en `context/project.md`, sección 2).
