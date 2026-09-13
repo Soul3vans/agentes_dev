@@ -1,15 +1,22 @@
 # orchestration/task-catalog.yaml
 # Catálogo de tipos de tarea y reglas de enrutamiento del orchestrator.
 # Este archivo es la ÚNICA fuente de verdad para decidir a qué agente
-# delegar cada solicitud. El orchestrator no debe tener reglas hardcodeadas.
+# delegar cada solicitud, Y para decidir si esa delegación requiere
+# confirmación humana antes de ejecutarse. El orchestrator no debe tener
+# reglas hardcodeadas de ninguno de los dos tipos.
+#
+# requires_human_confirmation: si un type lo omite, el default es TRUE
+#   (más seguro por omisión — nunca se asume "sin confirmación" por silencio).
+# allowed_executors: si un type lo omite, no hay restricción adicional más
+#   allá de la que ya impone "handler".
 #
 # Resolución: si existe context/task-catalog.override.yaml en el proyecto,
 # sus entradas sobrescriben (por campo "type") a las de este archivo base.
 # Para A/B testing de rutas: crear variantes (ej. task-catalog.variant-b.yaml)
 # y activar cuál se usa mediante flag en context/constraints.md.
 
-version: "1.1.0"
-last_updated: "2026-09-02"
+version: "1.2.0"
+last_updated: "2026-09-13"
 
 task_types:
 
@@ -168,6 +175,89 @@ task_types:
       - specs/00-status.md
     produces:
       - respuesta directa
+    risk_level: low
+
+  - type: project_create
+    description: >
+      Crear un proyecto nuevo de trabajo. Operación de gestión de workspace
+      (Carril A del Execution Service, ver iron_ops/execution_service.py),
+      no de código de producción — no requiere spec previo ni confirmación
+      humana. El Command Parser sanitiza el nombre antes de crear la carpeta.
+    handler: project-service
+    entry_requirement: none
+    escalation: null
+    requires_human_confirmation: false
+    allowed_executors: [orchestrator]
+    requires_context: []
+    produces:
+      - proyecto nuevo registrado en ~/.iron/projects.json
+    risk_level: low
+
+  - type: project_clone
+    description: >
+      Clonar un repositorio existente como proyecto de trabajo (Carril A).
+      El Command Parser (iron_ops/command_parser.py) valida la sintaxis de
+      la URL y corrige errores obvios (ej. owner/repo intercambiados) antes
+      de ejecutar; si no hay corrección segura, se detiene y pregunta al PM
+      — pero la ejecución del clonado en sí no requiere confirmación.
+    handler: project-service
+    entry_requirement: none
+    escalation: null
+    requires_human_confirmation: false
+    allowed_executors: [orchestrator]
+    requires_context: []
+    produces:
+      - proyecto clonado y registrado en ~/.iron/projects.json
+    risk_level: low
+
+  - type: project_switch
+    description: >
+      Cambiar cuál es el proyecto activo. Resuelve por coincidencia exacta
+      o por corrección de alta confianza (distancia de edición) contra la
+      lista real de proyectos existentes; ante ambigüedad genuina entre dos
+      o más proyectos parecidos, se detiene y pregunta al PM cuál eligió.
+    handler: project-service
+    entry_requirement: none
+    escalation: null
+    requires_human_confirmation: false
+    allowed_executors: [orchestrator]
+    requires_context: []
+    produces:
+      - active_project actualizado en ~/.iron/projects.json
+    risk_level: low
+
+  - type: test_execution
+    description: >
+      Crear y ejecutar un test NUEVO, dentro del alcance de la tarea actual
+      (Carril B del Execution Service). Exclusivo de qa-reviewer y
+      cybersecurity — frontend-dev y backend-dev NUNCA usan este type,
+      siguen bajo el flujo de confirmación normal de
+      orchestration/workflow.md sección 5. Correr una suite ya existente
+      que el ejecutor no creó tampoco entra acá: eso también sigue el flujo
+      de confirmación normal (ver agentes/qa-reviewer.md sección 2).
+      La Action {stack, target_path, flags} se valida contra
+      orchestration/test-runners.yaml (+ override del proyecto) antes de
+      llegar al Execution Service — cualquier stack, ruta o flag fuera del
+      catálogo se rechaza sin ejecutar nada.
+    handler: dynamic
+    routing_rule:
+      - condition: >
+          El ejecutor es qa-reviewer o cybersecurity, y el test es nuevo
+          (creado dentro del alcance de la tarea actual).
+        handler: qa_or_cyber_no_confirmation
+      - condition: >
+          El ejecutor es frontend-dev/backend-dev, o el test corre sobre
+          código/suite ya existente que el ejecutor no creó.
+        handler: flujo_normal_con_confirmacion   # ver workflow.md §5
+    entry_requirement: none
+    escalation: null
+    requires_human_confirmation: false
+    allowed_executors: [qa-reviewer, cybersecurity]
+    requires_context:
+      - orchestration/test-runners.yaml
+      - context/test-runners.override.yaml
+    produces:
+      - evidencia real (stdout/stderr/exit_code) para el veredicto de QA/Cybersecurity
     risk_level: low
 
   - type: ambiguous
