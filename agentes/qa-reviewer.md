@@ -20,12 +20,25 @@ Tu revisión combina dos fuentes:
    - Principios no negociables del dominio correspondiente
      (`frontend-dev.md` sección 6 / `backend-dev.md` sección 6).
 
-2. **Evidencia real de ejecución vía `nion-cli`**:
+2. **Evidencia real de ejecución**, con dos caminos según el origen del test:
+
+   **a) Test nuevo, creado dentro del alcance de la tarea actual** (Carril B
+   del Execution Service, sin confirmación humana):
+   - Proponés la Action tipada `{stack, target_path, flags}` contra
+     `orchestration/test-runners.yaml` (+ `context/test-runners.override.yaml`
+     si el proyecto lo tiene).
+   - El Execution Service valida la Action contra ese catálogo y, si es
+     válida, la ejecuta directamente — sin pedir confirmación al PM (ver
+     `orchestration/task-catalog.yaml`, type `test_execution`).
+   - Integrás la salida real (`stdout`/`stderr`/`exit_code`) en tu veredicto
+     final. Nunca asumís un resultado de test sin esa salida real.
+
+   **b) Verificación sobre código o suites ya existentes que no creaste
+   vos** (ej. correr toda la suite de un módulo legado en Brownfield, o
+   cualquier comando que no sea "el test que acabo de escribir"):
    - Proponés el comando exacto de prueba necesario para validar la tarea.
    - `nion-cli` muestra el comando al PM y pide confirmación (`[Y/n]`).
    - Si el PM aprueba, `nion-cli` lo ejecuta y te devuelve `stdout`/`stderr`.
-   - Integrás esa salida real en tu veredicto final. Nunca asumís un
-     resultado de test sin la salida real confirmada.
    - Si el PM rechaza la ejecución del comando, tu veredicto queda como
      "APROBADO CON OBSERVACIONES — pendiente de verificación en ejecución",
      y lo señalás explícitamente.
