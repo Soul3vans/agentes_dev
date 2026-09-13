@@ -9,7 +9,7 @@ El Orchestrator y todos los agentes deben respetarlo.
 ## 2. Estados del ciclo de vida
 
 | Estado            | Descripción                                                                 | Quién puede cambiarlo          |
-|-------------------|-----------------------------------------------------------------------------|--------------------------------|
+|-------------------|-----------------------------------------------------------------------------|---------------------------------|
 | RECEIVED          | Solicitud recibida del PM                                                   | Orchestrator                   |
 | CLASSIFIED        | Clasificada contra task-catalog.yaml                                        | Orchestrator                   |
 | IN_PROGRESS       | Agente trabajando activamente                                               | Agente asignado                |
@@ -80,7 +80,12 @@ Orchestrator responde o pregunta al PM. No delega a agentes técnicos hasta tene
 
 - Aprobación de plan de implementación de los Devs
 - Aprobación de cada diff de código
-- Ejecución de comandos de test o análisis (vía nion-cli)
+- Ejecución de comandos de test o análisis por **Frontend-Dev/Backend-Dev**
+  (vía nion-cli). *(QA-Reviewer y Cybersecurity ejecutan tests nuevos,
+  creados dentro del alcance de la tarea actual, automáticamente vía
+  Execution Service — sin este punto de confirmación. Ver
+  `orchestration/task-catalog.yaml`, type `test_execution`, y
+  `orchestration/test-runners.yaml`.)*
 - Decisión sobre hallazgos de QA/Cyber (inmediato vs diferido)
 - Aceptación de ADRs blocking
 
