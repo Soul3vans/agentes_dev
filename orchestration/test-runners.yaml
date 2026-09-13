@@ -1,4 +1,4 @@
-# orchestation/test-runners.yaml
+# orchestration/test-runners.yaml
 # Catálogo base de runners de test, usado por QA-Reviewer y Cybersecurity para
 # ejecutar tests nuevos sin confirmación humana (Carril B del Execution Service).
 #
@@ -8,7 +8,7 @@
 #
 # Resolución: si el proyecto activo tiene context/test-runners.override.yaml,
 # sus entradas se fusionan sobre las de este archivo por campo "stack",
-# siguiendo el mismo patrón que orchestation/task-catalog.yaml.
+# siguiendo el mismo patrón que orchestration/task-catalog.yaml.
 
 version: "1.0.0"
 last_updated: "2026-09-12"

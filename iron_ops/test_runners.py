@@ -20,7 +20,7 @@ import yaml  # requiere PyYAML: pip install pyyaml --break-system-packages
 # desde qué carpeta se haya invocado la keyword. IRON_FRAMEWORK_DIR permite
 # sobreescribirlo si el paquete se instala en otro lado.
 IRON_FRAMEWORK_DIR = Path(os.environ.get("IRON_FRAMEWORK_DIR", Path(__file__).resolve().parent.parent))
-BASE_CATALOG_PATH = IRON_FRAMEWORK_DIR / "orchestation" / "test-runners.yaml"
+BASE_CATALOG_PATH = IRON_FRAMEWORK_DIR / "orchestration" / "test-runners.yaml"
 ALLOWED_ROLES = ["qa-reviewer", "cybersecurity"]
 
 

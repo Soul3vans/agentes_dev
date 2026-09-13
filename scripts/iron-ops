@@ -1,0 +1,6 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# scripts/iron-ops — wrapper de la capa operativa (crear/clonar/ir/listar/activo/mapa).
+# Sin lógica propia: toda la implementación vive en iron_ops/ (Python).
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+FRAMEWORK_DIR="$(dirname "$SCRIPT_DIR")"
+PYTHONPATH="$FRAMEWORK_DIR" python3 -m iron_ops.cli "$@"
