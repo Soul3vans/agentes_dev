@@ -20,9 +20,15 @@ reportan; el PM asigna, aprueba y autoriza.
 - **Modelo de LLM**: un único modelo local de menor capacidad, asumiendo los 7
   roles definidos en `agentes/` (relación 1:7 — ver nota abajo sobre conteo de
   agentes).
-- **Modo de operación**: LOCAL (sin tool-calling automático). Todo cambio de
-  código se entrega en formato de diff (Formato de Propuesta de Cambio, definido
-  en `orchestration/handoff-protocol.md`). El PM aplica los cambios manualmente.
+- **Modo de operación**: LOCAL. La generación y modificación de código de
+  producción (`frontend-dev`/`backend-dev`) sigue siendo sin tool-calling
+  automático: todo cambio se entrega en formato de diff (Formato de
+  Propuesta de Cambio, definido en `orchestration/handoff-protocol.md`) y el
+  PM lo aplica tras confirmación explícita. Las operaciones de gestión de
+  proyecto (crear/clonar/cambiar de proyecto activo) y la ejecución de tests
+  nuevos por `qa-reviewer`/`cybersecurity` sí usan ejecución automática
+  acotada, sin ese paso de confirmación — ver `orchestration/task-catalog.yaml`
+  (campo `requires_human_confirmation`) y `orchestration/test-runners.yaml`.
 - **Disciplina reforzada obligatoria** (compensa la menor capacidad del modelo):
   1. Cada invocación de rol carga únicamente su propio archivo `agentes/<rol>.md`
      más los archivos de `context/`/`specs/` estrictamente necesarios para la
