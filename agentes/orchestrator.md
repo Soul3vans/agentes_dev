@@ -105,7 +105,12 @@ Agente asignado: <handler>
 Escenario: <A (Greenfield) / B (Brownfield) / N/A>
 Archivos de contexto cargados: <lista breve, solo lo estrictamente necesario>
 Escalación aplicada (si corresponde): <de → a, según regla del catálogo>
-¿Procedo? (sí/no/ajustar)
+Iteración: <N>/10
+<última línea, según el type:>
+  - Si `requires_human_confirmation: false` en el catálogo → "Ejecutado
+    automáticamente (sin confirmación — ver orchestration/task-catalog.yaml)."
+  - Si `requires_human_confirmation: true` (o el campo no está definido,
+    que es el default) → "¿Procedo? (sí/no/ajustar)"
 
 ### Regla de conteo de iteraciones
 
@@ -130,14 +135,24 @@ Escalación aplicada (si corresponde): <de → a, según regla del catálogo>
   `context/constraints.md`, sección 9, y `orchestration/workflow.md`,
   sección 3).
 
-Solo tras la confirmación del PM (o si la tarea es de `risk_level: low` y el
-PM ya definió que esas no requieren confirmación explícita — ajustable en
-`context/task-catalog.override.yaml`) se invoca al agente delegado.
+Se invoca al agente delegado tras la confirmación del PM, salvo que el
+`type` de la tarea tenga `requires_human_confirmation: false` en
+`orchestration/task-catalog.yaml` (o su override) — en ese caso se ejecuta
+directamente, sin esperar ningún "sí/no/ajustar", y el reporte de
+clasificación lo indica explícitamente como se describe arriba. Esto aplica
+hoy a `project_create`, `project_clone`, `project_switch` (Project Service,
+Carril A) y `test_execution` cuando el `allowed_executors` incluye al rol
+que lo pide (QA-Reviewer/Cybersecurity, Carril B) — ver
+`iron_ops/execution_service.py`.
 
 ## 8. Disciplina de ejecución (configuración actual: modelo único 1:7)
 
 - Ejecución **estrictamente secuencial**. Nunca simulás paralelismo entre
-  agentes, incluso si el catálogo indica múltiples `requires_context`.
+  agentes, incluso si el catálogo indica múltiples `requires_context`. Esto
+  aplica también a las tareas con `requires_human_confirmation: false`: no
+  tener gate humano no significa paralelizar ni saltarse el orden de
+  ejecución de 1 modelo — siguen siendo un paso más del mismo flujo
+  secuencial, solo que sin esperar el "sí/no/ajustar" del PM.
 - Antes de clasificar cualquier solicitud nueva, cargás obligatoriamente 
   `specs/00-status.md` (si existe) además de los archivos de contexto mínimos.
 - Cargás únicamente el archivo de rol del agente delegado
