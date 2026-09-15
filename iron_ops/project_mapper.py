@@ -12,6 +12,7 @@ Es de solo lectura: entra en el Carril A (sin confirmación humana).
 """
 
 import ast
+import fnmatch
 import hashlib
 import json
 import re
@@ -19,6 +20,16 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 IGNORAR_DIRS = {".git", "node_modules", "__pycache__", ".venv", "venv", ".iron_mapa"}
+
+# Patrones de archivos que NUNCA se mapean, ni siquiera con hash — evita que
+# el mapa confirme la existencia/tamaño de secretos (ver Fase de auditoría,
+# hallazgo sobre .env/cookies en un proyecto real).
+EXCLUIR_ARCHIVOS = [
+    "*.env", "*.env.*",           # .env, variables.env, .env.local, etc.
+    "*cookies*",
+    "*.pem", "*.key", "*.p12", "*.pfx",
+    "*credentials*", "*secret*",
+]
 
 CAPA_POR_EXTENSION = {
     ".py": "backend", ".go": "backend", ".java": "backend", ".rb": "backend",
@@ -71,6 +82,8 @@ def generar_mapa(project_root):
     for ruta in raiz.rglob("*"):
         if not ruta.is_file() or any(parte in IGNORAR_DIRS for parte in ruta.parts):
             continue
+        if any(fnmatch.fnmatch(ruta.name, patron) for patron in EXCLUIR_ARCHIVOS):
+            continue
         try:
             contenido = ruta.read_text(errors="ignore")
         except OSError:
@@ -91,15 +104,42 @@ def generar_mapa(project_root):
 
         archivos.append(entrada)
 
+    ahora = datetime.now(timezone.utc)
     mapa = {
-        "generado_en": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "generado_en": ahora.isoformat(timespec="seconds"),
         "archivos": archivos,
     }
 
     destino_dir = raiz / ".iron_mapa"
     destino_dir.mkdir(exist_ok=True)
-    destino = destino_dir / "mapa_completo.json"
-    destino.write_text(json.dumps(mapa, indent=2, ensure_ascii=False))
 
-    return {"success": True, "path": str(destino), "archivos_mapeados": len(archivos),
-             "message": f"Mapa generado con {len(archivos)} archivos"}
+    # Versionado por fecha: cada corrida queda como un archivo aparte, para
+    # que el usuario pueda ver cuál mapa es más reciente y comparar contra
+    # el anterior si hace falta. mapa_completo.json (sin fecha) siempre
+    # apunta al último, para que herramientas que esperan un nombre fijo
+    # (ej. el comando 'm' del .bashrc, o context/tech-stack.md consumidores
+    # futuros) sigan funcionando sin cambios.
+    etiqueta_fecha = ahora.strftime("%Y%m%d-%H%M%S")
+    destino_versionado = destino_dir / f"mapa_completo-{etiqueta_fecha}.json"
+    destino_estable = destino_dir / "mapa_completo.json"
+
+    contenido_json = json.dumps(mapa, indent=2, ensure_ascii=False)
+    destino_versionado.write_text(contenido_json)
+    destino_estable.write_text(contenido_json)
+
+    _rotar_mapas_viejos(destino_dir)
+
+    return {"success": True, "path": str(destino_versionado), "archivos_mapeados": len(archivos),
+             "message": f"Mapa generado con {len(archivos)} archivos ({etiqueta_fecha})"}
+
+
+def _rotar_mapas_viejos(destino_dir, max_versiones=2):
+    """Conserva solo los `max_versiones` mapas versionados más recientes.
+
+    El formato de nombre (mapa_completo-AAAAMMDD-HHMMSS.json) ordena
+    correctamente por fecha con un simple sort de strings, sin necesidad de
+    parsear cada nombre.
+    """
+    versionados = sorted(destino_dir.glob("mapa_completo-*.json"), reverse=True)
+    for viejo in versionados[max_versiones:]:
+        viejo.unlink()
