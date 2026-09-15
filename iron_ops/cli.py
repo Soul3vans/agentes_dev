@@ -14,7 +14,7 @@ original con sus `exit` dentro de funciones.
 import json
 import sys
 
-from . import project_mapper, project_service
+from . import execution_service, project_mapper, project_service, test_runners
 
 
 def _ejecutar(accion, args):
@@ -35,9 +35,51 @@ def _ejecutar(accion, args):
         if not activo:
             return {"success": False, "message": "no hay proyecto activo — usá 'ir <proyecto>' primero"}
         return project_mapper.generar_mapa(activo["path"])
+    if accion == "test":
+        return _ejecutar_test(args)
 
     return {"success": False, "error_type": "unknown_action",
-             "message": f"acción desconocida: '{accion}' (usar: crear|clonar|ir|listar|activo|mapa)"}
+             "message": f"acción desconocida: '{accion}' (usar: crear|clonar|ir|listar|activo|mapa|test)"}
+
+
+def _ejecutar_test(args):
+    """Carril B: valida la Action contra el catálogo y la corre vía Execution
+    Service. Uso: iron-ops test <rol> <stack> <target_path> [flags...]
+
+    Sin tool-calling automático del modelo local (ver context/tech-stack.md
+    §1.1), esta acción es el punto donde un humano —o, a futuro, un wrapper—
+    traduce la Action que QA-Reviewer/Cybersecurity propusieron en texto
+    hacia una ejecución real. No reemplaza el rol; solo lo conecta con el
+    Execution Service.
+    """
+    if len(args) < 3:
+        return {"success": False, "error_type": "missing_argument",
+                 "message": "uso: iron-ops test <rol> <stack> <target_path> [flags...]"}
+
+    rol, stack, target_path = args[0], args[1], args[2]
+    flags = args[3:]
+
+    activo = project_service.get_active_project()
+    if not activo:
+        return {"success": False, "message": "no hay proyecto activo — usá 'ir <proyecto>' primero"}
+
+    action = {"stack": stack, "target_path": target_path, "flags": flags}
+    argv, error = test_runners.validar_action(action, activo["path"])
+    if error:
+        return {"success": False, "error_type": "invalid_action", "message": error}
+
+    resultado = execution_service.run_test(
+        argv, cwd=activo["path"], allowed_roles=test_runners.ALLOWED_ROLES, calling_role=rol,
+    )
+    return {
+        "success": resultado.success,
+        "exit_code": resultado.exit_code,
+        "stdout": resultado.stdout,
+        "stderr": resultado.stderr,
+        "duracion_ms": resultado.duration_ms,
+        "comando_ejecutado": " ".join(resultado.command),
+        "error_type": resultado.error_type,
+    }
 
 
 def main():
